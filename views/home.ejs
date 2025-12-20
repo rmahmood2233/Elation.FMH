@@ -1,0 +1,126 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar', { currentPage: 'home' }) %>
+
+<section class="hero">
+    <h1 class="hero-title">Celebrate Life's<br />Precious Moments</h1>
+    <p class="hero-subtitle">
+        From intimate gatherings to grand celebrations, we orchestrate
+        experiences that reflect your unique vision with elegance and precision.
+    </p>
+    <button class="btn-hero" onclick="openBookingModal()">
+        Begin Your Journey
+    </button>
+</section>
+
+<section class="section">
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-subtitle">
+        We offer comprehensive event planning services tailored to your unique needs
+    </p>
+
+    <div class="services-grid">
+        <% if (typeof featuredServices !== 'undefined' && featuredServices.length > 0) { %>
+            <% featuredServices.forEach(service => { %>
+                <div class="service-card" onclick="openServiceModal('<%= service._id %>')">
+                    <div class="service-image" <% if (service.images && service.images.length > 0) { %>style="background-image: url('<%= service.images[0] %>');"<% } %>></div>
+                    <div class="service-content">
+                        <h3 class="service-title"><%= service.name %></h3>
+                        <p class="service-description"><%= service.shortDesc %></p>
+                        <button class="btn-card" onclick="event.stopPropagation(); openBookingModal();">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No services available at the moment.</p>
+        <% } %>
+    </div>
+</section>
+
+<section class="section section-light">
+    <h2 class="section-title">Recent Events</h2>
+    <p class="section-subtitle">
+        A glimpse into the celebrations we've brought to life
+    </p>
+
+    <div class="portfolio-grid">
+        <% if (typeof recentPortfolio !== 'undefined' && recentPortfolio.length > 0) { %>
+            <% recentPortfolio.forEach(item => { %>
+                <div class="portfolio-card">
+                    <div class="portfolio-image" <% if (item.images && item.images.length > 0) { %>style="background-image: url('<%= item.images[0] %>');"<% } %>></div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title"><%= item.eventName %></h3>
+                        <p class="portfolio-category"><%= item.location %> · <%= item.footCount || 0 %> Guests</p>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No portfolio items available at the moment.</p>
+        <% } %>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px">
+        <a href="/portfolio"><button class="btn-hero">View Full Portfolio</button></a>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">What Our Clients Say</h2>
+    <p class="section-subtitle">
+        Read about experiences from our happy clients
+    </p>
+
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <p class="testimonial-text">
+                "Working with Elation by FMH transformed our wedding day into an
+                absolute dream. Every detail was perfectly coordinated, allowing us
+                to be fully present and enjoy every moment."
+            </p>
+            <div class="testimonial-author">— Sarah & Michael</div>
+            <div class="testimonial-event">Wedding 2024</div>
+        </div>
+
+        <div class="testimonial-card">
+            <p class="testimonial-text">
+                "The team's professionalism and attention to detail exceeded all our
+                expectations. Our corporate event was seamless and left a lasting
+                impression on all attendees."
+            </p>
+            <div class="testimonial-author">— Ahmed Khan</div>
+            <div class="testimonial-event">Corporate Event 2024</div>
+        </div>
+
+        <div class="testimonial-card">
+            <p class="testimonial-text">
+                "From the initial consultation to the final moments of our
+                anniversary celebration, Elation by FMH made everything magical.
+                Highly recommended!"
+            </p>
+            <div class="testimonial-author">— Fatima & Ali</div>
+            <div class="testimonial-event">Anniversary 2024</div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <h2 class="section-title">Ready to Plan Your Event?</h2>
+    <p class="section-subtitle">
+        Let's create something extraordinary together
+    </p>
+    <div style="text-align: center">
+        <button class="btn-cta" onclick="openBookingModal()">
+            Get Started Today
+        </button>
+    </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/bookingModal', { services: typeof featuredServices !== 'undefined' ? featuredServices : [] }) %>
+<%- include('partials/profileModals') %>
+
+<script src="/js/script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,169 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar', { currentPage: 'services' }) %>
+
+<section class="page-header">
+    <h1 class="page-title">Our Services</h1>
+    <p class="page-subtitle">
+        Comprehensive event planning solutions tailored to your vision
+    </p>
+</section>
+
+<section class="section">
+    <div class="services-grid">
+        <% if (typeof services !== 'undefined' && services.length > 0) { %>
+            <% services.forEach(service => { %>
+                <div class="service-card" onclick="openServiceModal('<%= service._id %>')">
+                    <div class="service-image" <% if (service.images && service.images.length > 0) { %>style="background-image: url('<%= service.images[0] %>');"<% } %>></div>
+                    <div class="service-content">
+                        <h3 class="service-title"><%= service.name %></h3>
+                        <p class="service-description"><%= service.shortDesc %></p>
+                        <button class="btn-card" onclick="event.stopPropagation(); openBookingModal();">
+                            Book This Service
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No services available at the moment.</p>
+        <% } %>
+    </div>
+</section>
+
+<section class="section section-light">
+    <h2 class="section-title">Our Packages</h2>
+    <p class="section-subtitle">Choose the perfect package for your event</p>
+    <div class="packages-grid">
+        <% if (typeof packages !== 'undefined' && packages.length > 0) { %>
+            <% packages.forEach(pkg => { %>
+                <div class="package-card <%= pkg.isFeatured ? 'featured' : '' %>">
+                    <% if (pkg.isFeatured) { %>
+                        <div class="package-badge">Most Popular</div>
+                    <% } %>
+                    <div class="package-header">
+                        <h3 class="package-name"><%= pkg.displayName %></h3>
+                        <p class="package-price"><%= pkg.price %></p>
+                    </div>
+                    <ul class="package-features">
+                        <% if (pkg.features && pkg.features.length > 0) { %>
+                            <% pkg.features.forEach(feature => { %>
+                                <li><%= feature %></li>
+                            <% }); %>
+                        <% } else { %>
+                            <li>Package details coming soon</li>
+                        <% } %>
+                    </ul>
+                    <button class="btn-package" onclick="openBookingModal()">Select Package</button>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p style="text-align: center; grid-column: 1 / -1; color: #666;">Packages are being updated. Please check back soon.</p>
+        <% } %>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <h2 class="section-title">Ready to Get Started?</h2>
+    <p class="section-subtitle">
+        Let's discuss your event and create something extraordinary
+    </p>
+    <div style="text-align: center">
+        <button class="btn-cta" onclick="openBookingModal()">
+            Schedule Consultation
+        </button>
+    </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/bookingModal', { services: typeof services !== 'undefined' ? services : [] }) %>
+<%- include('partials/profileModals') %>
+
+<!-- Service Modal -->
+<div id="serviceModal" class="booking-overlay" style="display: none;">
+    <div class="booking-modal">
+        <div class="booking-header">
+            <button class="booking-close" onclick="closeServiceModal()">&times;</button>
+            <h2 id="serviceModalTitle">Service Details</h2>
+        </div>
+        <div class="booking-form-container">
+            <div id="serviceModalContent"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script>
+    const servicesData = <%- JSON.stringify(services || []) %>;
+    
+    let currentServiceImageIndex = 0;
+    
+    function openServiceModal(serviceId) {
+        const service = servicesData.find(s => s._id === serviceId);
+        if (!service) return;
+        
+        currentServiceImageIndex = 0;
+        document.getElementById('serviceModalTitle').textContent = service.name;
+        
+        let imageHtml = '';
+        if (service.images && service.images.length > 0) {
+            imageHtml = `
+                <div style="position: relative; margin-bottom: 20px;">
+                    <div id="serviceModalImage" style="width: 100%; height: 400px; background-image: url('${service.images[0]}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #f5f5f5; border-radius: 8px;"></div>
+                    ${service.images.length > 1 ? `
+                        <button onclick="prevServiceImage()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(84,110,106,0.8); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 18px;">‹</button>
+                        <button onclick="nextServiceImage()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(84,110,106,0.8); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 18px;">›</button>
+                        <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px;">
+                            <span id="serviceImageCounter">1 / ${service.images.length}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        document.getElementById('serviceModalContent').innerHTML = `
+            ${imageHtml}
+            <p><strong>Description:</strong></p>
+            <p>${service.fullDesc}</p>
+            <p><strong>Price:</strong> PKR ${service.price.toLocaleString()}</p>
+            <button class="btn-card" onclick="closeServiceModal(); openBookingModal();" style="margin-top: 20px;">
+                Book This Service
+            </button>
+        `;
+        
+        // Store current service for image navigation
+        window.currentService = service;
+        document.getElementById('serviceModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function nextServiceImage() {
+        if (!window.currentService || !window.currentService.images) return;
+        currentServiceImageIndex = (currentServiceImageIndex + 1) % window.currentService.images.length;
+        updateServiceImage();
+    }
+    
+    function prevServiceImage() {
+        if (!window.currentService || !window.currentService.images) return;
+        currentServiceImageIndex = (currentServiceImageIndex - 1 + window.currentService.images.length) % window.currentService.images.length;
+        updateServiceImage();
+    }
+    
+    function updateServiceImage() {
+        if (!window.currentService) return;
+        const img = document.getElementById('serviceModalImage');
+        const counter = document.getElementById('serviceImageCounter');
+        if (img && window.currentService.images[currentServiceImageIndex]) {
+            img.style.backgroundImage = `url('${window.currentService.images[currentServiceImageIndex]}')`;
+            if (counter) {
+                counter.textContent = `${currentServiceImageIndex + 1} / ${window.currentService.images.length}`;
+            }
+        }
+    }
+    
+    function closeServiceModal() {
+        document.getElementById('serviceModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+</script>
+</body>
+</html>
+

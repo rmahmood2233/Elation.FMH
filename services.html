@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services - Elation by FMH</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo-section">
+        <div class="logo-circle">EBF</div>
+        <div class="logo-text">Elation by FMH</div>
+      </div>
+      <div class="nav-menu">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="services.html" class="nav-link active">Services</a>
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn-book" onclick="openBookingModal()">Book Now</button>
+        <button class="btn-auth">Log In</button>
+        <button class="btn-auth btn-signup">Sign Up</button>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+      <h1 class="page-title">Our Services</h1>
+      <p class="page-subtitle">
+        Comprehensive event planning solutions tailored to your vision
+      </p>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section">
+      <div class="services-grid">
+        <div class="service-card">
+          <div
+            class="service-image"
+            style="background: linear-gradient(135deg, #9ab1ae, #e3bfb9)"
+          ></div>
+          <div class="service-content">
+            <h3 class="service-title">Wedding Planning</h3>
+            <p class="service-description">
+              From intimate ceremonies to grand celebrations, we create
+              unforgettable wedding experiences. Our team handles venue
+              selection, décor, catering coordination, and timeline management.
+            </p>
+            <ul class="service-features">
+              <li>Venue Selection & Design</li>
+              <li>Vendor Coordination</li>
+              <li>Timeline Management</li>
+              <li>Day-of Coordination</li>
+            </ul>
+            <button class="btn-card" onclick="openBookingModal()">
+              Book This Service
+            </button>
+          </div>
+        </div>
+        <!-- Repeat service-card blocks for other services -->
+        <!-- copy all your original cards, buttons unchanged except for modal integration -->
+        <!-- ... (other cards, unchanged) ... -->
+
+        <div class="service-card">
+          <div
+            class="service-image"
+            style="background: linear-gradient(135deg, #e3bfb9, #e1cbad)"
+          ></div>
+          <div class="service-content">
+            <h3 class="service-title">Corporate Events</h3>
+            <p class="service-description">
+              Professional event management for conferences, product launches,
+              seminars, and corporate celebrations that leave lasting
+              impressions on your attendees.
+            </p>
+            <ul class="service-features">
+              <li>Conference Planning</li>
+              <li>Product Launches</li>
+              <li>Team Building Events</li>
+              <li>Corporate Galas</li>
+            </ul>
+            <button class="btn-card" onclick="openBookingModal()">
+              Book This Service
+            </button>
+          </div>
+        </div>
+        <!-- ...repeat for Birthday Parties, Engagement Ceremonies, Anniversary, Social Gatherings... -->
+      </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section class="section section-light">
+      <h2 class="section-title">Our Packages</h2>
+      <p class="section-subtitle">Choose the perfect package for your event</p>
+      <div class="packages-grid">
+        <div class="package-card">
+          <div class="package-header">
+            <h3 class="package-name">Basic</h3>
+            <p class="package-price">Starting at PKR 150,000</p>
+          </div>
+          <ul class="package-features">
+            <li>Event Consultation</li>
+            <li>Venue Recommendations</li>
+            <li>Vendor Coordination</li>
+            <li>Basic Décor Setup</li>
+            <li>Timeline Creation</li>
+          </ul>
+          <button class="btn-package" onclick="openBookingModal()">
+            Select Package
+          </button>
+        </div>
+        <div class="package-card featured">
+          <div class="package-badge">Most Popular</div>
+          <div class="package-header">
+            <h3 class="package-name">Premium</h3>
+            <p class="package-price">Starting at PKR 350,000</p>
+          </div>
+          <ul class="package-features">
+            <li>Everything in Basic</li>
+            <li>Full Décor Design</li>
+            <li>Photography & Videography</li>
+            <li>Entertainment Booking</li>
+            <li>Catering Coordination</li>
+            <li>Day-of Coordination Team</li>
+          </ul>
+          <button class="btn-package" onclick="openBookingModal()">
+            Select Package
+          </button>
+        </div>
+        <div class="package-card">
+          <div class="package-header">
+            <h3 class="package-name">Luxury</h3>
+            <p class="package-price">Starting at PKR 600,000</p>
+          </div>
+          <ul class="package-features">
+            <li>Everything in Premium</li>
+            <li>Custom Theme Design</li>
+            <li>Premium Vendor Selection</li>
+            <li>Guest Transportation</li>
+            <li>Accommodation Coordination</li>
+            <li>Multi-day Events</li>
+            <li>VIP Guest Services</li>
+          </ul>
+          <button class="btn-package" onclick="openBookingModal()">
+            Select Package
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-dark">
+      <h2 class="section-title">Ready to Get Started?</h2>
+      <p class="section-subtitle">
+        Let's discuss your event and create something extraordinary
+      </p>
+      <div style="text-align: center">
+        <button class="btn-cta" onclick="openBookingModal()">
+          Schedule Consultation
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-left">
+        <p>©2025 · Elation by FMH</p>
+        <p>All rights Reserved</p>
+      </div>
+      <div class="footer-center">
+        <a href="services.html" class="footer-link">Services</a>
+        <a href="portfolio.html" class="footer-link">Portfolio</a>
+        <a href="about.html" class="footer-link">About</a>
+        <a href="contact.html" class="footer-link">Contact</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" class="social-icon">📷</a>
+        <a href="#" class="social-icon">📘</a>
+        <a href="#" class="social-icon">🔗</a>
+        <a href="#" class="social-icon">🐦</a>
+      </div>
+    </footer>
+
+    <!-- Booking Modal Overlay - add before scripts -->
+    <div class="booking-overlay modal-overlay" id="bookingModal">
+      <div class="booking-modal">
+        <div class="booking-header">
+          <button class="booking-close" onclick="closeBookingModal()">
+            &times;
+          </button>
+          <h2>Book Your Event</h2>
+          <p>Provide your details below, and we'll get back to you soon.</p>
+        </div>
+        <div class="booking-form-container">
+          <form class="booking-form" onsubmit="handleBookingSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"
+                  >First Name <span class="required">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="John"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-input" placeholder="Ash" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Email Address <span class="required">*</span></label
+              >
+              <input
+                type="email"
+                class="form-input"
+                placeholder="example.email@gmail.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number (Optional)</label>
+              <input
+                type="tel"
+                class="form-input"
+                placeholder="03xx-xxxx-xxx"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Event Type <span class="required">*</span></label
+              >
+              <select class="form-select" required>
+                <option value="">Select event type</option>
+                <option value="wedding">Wedding</option>
+                <option value="engagement">Engagement</option>
+                <option value="birthday">Birthday Party</option>
+                <option value="corporate">Corporate Event</option>
+                <option value="anniversary">Anniversary</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Preferred Date <span class="required">*</span></label
+              >
+              <input type="date" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Location <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                class="form-input"
+                placeholder="Islamabad/Rawalpindi"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Guests <span class="required">*</span></label
+              >
+              <input
+                type="number"
+                class="form-input"
+                placeholder="Number of guests"
+                min="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Services Needed <span class="required">*</span></label
+              >
+              <select class="form-select" required>
+                <option value="">Choose services</option>
+                <option value="full-planning">Full Event Planning</option>
+                <option value="venue">Venue Selection</option>
+                <option value="catering">Catering</option>
+                <option value="decoration">Decoration & Design</option>
+                <option value="photography">Photography & Videography</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="all">All Services</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Package <span class="required">*</span></label
+              >
+              <select class="form-select" required>
+                <option value="">Select package</option>
+                <option value="basic">Basic</option>
+                <option value="premium">Premium</option>
+                <option value="luxury">Luxury</option>
+                <option value="custom">Custom Package</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea
+                class="form-textarea"
+                placeholder="Tell us more about your event vision..."
+                rows="4"
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- END BOOKING MODAL OVERLAY -->
+
+    <script src="script.js"></script>
+  </body>
+</html>

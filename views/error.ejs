@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<section class="section" style="text-align: center; padding: 100px 60px;">
+    <h1 class="section-title" style="font-size: 72px; margin-bottom: 20px;">Oops!</h1>
+    <h2 class="section-title"><%= typeof message !== 'undefined' ? message : 'Something went wrong' %></h2>
+    <p class="section-subtitle">We're sorry, but something unexpected happened.</p>
+    <a href="/"><button class="btn-hero">Go Home</button></a>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/script.js"></script>
+</body>
+</html>
+

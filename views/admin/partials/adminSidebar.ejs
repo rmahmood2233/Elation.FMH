@@ -1,0 +1,13 @@
+<div class="admin-sidebar">
+    <h2 style="margin-bottom: 30px;">Admin Panel</h2>
+    <a href="/admin/dashboard" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+    <a href="/admin/services" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'services' ? 'active' : '' %>">Services</a>
+    <a href="/admin/portfolio" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'portfolio' ? 'active' : '' %>">Portfolio</a>
+    <a href="/admin/bookings" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'bookings' ? 'active' : '' %>">Bookings</a>
+    <a href="/admin/messages" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'messages' ? 'active' : '' %>">Messages</a>
+    <a href="/admin/about" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'active' : '' %>">About Us</a>
+    <a href="/admin/users" class="admin-link <%= typeof currentPage !== 'undefined' && currentPage === 'users' ? 'active' : '' %>">Users</a>
+    <a href="/" class="admin-link" style="margin-top: 30px;">View Site</a>
+    <a href="#" onclick="handleLogout(); return false;" class="admin-link">Logout</a>
+</div>
+

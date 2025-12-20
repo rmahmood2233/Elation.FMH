@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us - Elation by FMH</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo-section">
+        <div class="logo-circle">EBF</div>
+        <div class="logo-text">Elation by FMH</div>
+      </div>
+      <div class="nav-menu">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link active">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn-book" onclick="openBookingModal()">Book Now</button>
+        <button class="btn-auth">Log In</button>
+        <button class="btn-auth btn-signup">Sign Up</button>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+      <h1 class="page-title">Get in Touch</h1>
+      <p class="page-subtitle">
+        We'd love to hear from you and discuss your event
+      </p>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section">
+      <div class="contact-container">
+        <!-- Contact Form -->
+        <div class="contact-form-wrapper">
+          <h2 class="contact-heading">Send Us a Message</h2>
+          <form class="contact-form" onsubmit="handleContactSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"
+                  >First Name <span class="required">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="John"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label"
+                  >Last Name <span class="required">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Doe"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"
+                >Email Address <span class="required">*</span></label
+              >
+              <input
+                type="email"
+                class="form-input"
+                placeholder="john.doe@example.com"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"
+                >Phone Number <span class="required">*</span></label
+              >
+              <input
+                type="tel"
+                class="form-input"
+                placeholder="03xx-xxxx-xxx"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"
+                >Subject <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                class="form-input"
+                placeholder="How can we help you?"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"
+                >Message <span class="required">*</span></label
+              >
+              <textarea
+                class="form-textarea"
+                placeholder="Tell us about your event or inquiry..."
+                rows="5"
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Send Message</button>
+          </form>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-info-wrapper">
+          <h2 class="contact-heading">Contact Information</h2>
+          <div class="contact-info-card">
+            <div class="info-icon">📍</div>
+            <div class="info-content">
+              <h3 class="info-title">Address</h3>
+              <p class="info-text">F-7 Markaz, Islamabad<br />Pakistan</p>
+            </div>
+          </div>
+          <div class="contact-info-card">
+            <div class="info-icon">📞</div>
+            <div class="info-content">
+              <h3 class="info-title">Phone</h3>
+              <p class="info-text">+92 300 1234567<br />+92 51 1234567</p>
+            </div>
+          </div>
+          <div class="contact-info-card">
+            <div class="info-icon">✉️</div>
+            <div class="info-content">
+              <h3 class="info-title">Email</h3>
+              <p class="info-text">
+                info@elationbyfmh.com<br />booking@elationbyfmh.com
+              </p>
+            </div>
+          </div>
+          <div class="contact-info-card">
+            <div class="info-icon">🕒</div>
+            <div class="info-content">
+              <h3 class="info-title">Business Hours</h3>
+              <p class="info-text">
+                Monday - Friday: 9:00 AM - 6:00 PM<br />Saturday: 10:00 AM -
+                4:00 PM<br />Sunday: Closed
+              </p>
+            </div>
+          </div>
+          <div class="social-links">
+            <h3 class="social-heading">Follow Us</h3>
+            <div class="social-icons-large">
+              <a href="#" class="social-icon-large">📷 Instagram</a>
+              <a href="#" class="social-icon-large">📘 Facebook</a>
+              <a href="#" class="social-icon-large">🔗 LinkedIn</a>
+              <a href="#" class="social-icon-large">🐦 Twitter</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="section section-light">
+      <h2 class="section-title">Visit Our Office</h2>
+      <p class="section-subtitle">Come meet us at our office in Islamabad</p>
+      <div class="map-container">
+        <div class="map-placeholder">
+          <p>📍 F-7 Markaz, Islamabad, Pakistan</p>
+          <p style="font-size: 14px; color: #666; margin-top: 10px">
+            Map integration available
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-subtitle">Quick answers to common questions</p>
+      <div class="faq-container">
+        <div class="faq-item">
+          <h3 class="faq-question">How far in advance should I book?</h3>
+          <p class="faq-answer">
+            We recommend booking at least 3-6 months in advance for weddings and
+            large events. For smaller gatherings, 4-8 weeks is typically
+            sufficient.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Do you offer customized packages?</h3>
+          <p class="faq-answer">
+            Absolutely! We understand every event is unique. We're happy to
+            create customized packages tailored to your specific needs and
+            budget.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">What areas do you serve?</h3>
+          <p class="faq-answer">
+            We primarily serve Islamabad and Rawalpindi, but we're available for
+            destination events throughout Pakistan.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">
+            Can I visit your office for consultation?
+          </h3>
+          <p class="faq-answer">
+            Yes! We encourage in-person consultations. Please schedule an
+            appointment by calling us or using the booking form.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-left">
+        <p>©2025 · Elation by FMH</p>
+        <p>All rights Reserved</p>
+      </div>
+      <div class="footer-center">
+        <a href="services.html" class="footer-link">Services</a>
+        <a href="portfolio.html" class="footer-link">Portfolio</a>
+        <a href="about.html" class="footer-link">About</a>
+        <a href="contact.html" class="footer-link">Contact</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" class="social-icon">📷</a>
+        <a href="#" class="social-icon">📘</a>
+        <a href="#" class="social-icon">🔗</a>
+        <a href="#" class="social-icon">🐦</a>
+      </div>
+    </footer>
+
+    <!-- BOOKING MODAL OVERLAY: placed before scripts to ensure functionality -->
+    <div class="booking-overlay modal-overlay" id="bookingModal">
+      <div class="booking-modal">
+        <div class="booking-header">
+          <button class="booking-close" onclick="closeBookingModal()">
+            &times;
+          </button>
+          <h2>Book Your Event</h2>
+          <p>Provide your details below, and we'll get back to you soon.</p>
+        </div>
+        <div class="booking-form-container">
+          <form class="booking-form" onsubmit="handleBookingSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"
+                  >First Name <span class="required">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="John"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-input" placeholder="Ash" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Email Address <span class="required">*</span></label
+              >
+              <input
+                type="email"
+                class="form-input"
+                placeholder="example.email@gmail.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number (Optional)</label>
+              <input
+                type="tel"
+                class="form-input"
+                placeholder="03xx-xxxx-xxx"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Event Type <span class="required">*</span></label
+              >
+              <select class="form-select" required>
+                <option value="">Select event type</option>
+                <option value="wedding">Wedding</option>
+                <option value="engagement">Engagement</option>
+                <option value="birthday">Birthday Party</option>
+                <option value="corporate">Corporate Event</option>
+                <option value="anniversary">Anniversary</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Preferred Date <span class="required">*</span></label
+              >
+              <input type="date" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Location <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                class="form-input"
+                placeholder="Islamabad/Rawalpindi"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Guests <span class="required">*</span></label
+              >
+              <input
+                type="number"
+                class="form-input"
+                placeholder="Number of guests"
+                min="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Services Needed <span class="required">*</span></label
+              >
+              <select class="form-select" required>
+                <option value="">Choose services</option>
+                <option value="full-planning">Full Event Planning</option>
+                <option value="venue">Venue Selection</option>
+                <option value="catering">Catering</option>
+                <option value="decoration">Decoration & Design</option>
+                <option value="photography">Photography & Videography</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="all">All Services</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"
+                >Package <span class="required">*</span></label
+              >
+              <select class="form-select" required>
+                <option value="">Select package</option>
+                <option value="basic">Basic</option>
+                <option value="premium">Premium</option>
+                <option value="luxury">Luxury</option>
+                <option value="custom">Custom Package</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea
+                class="form-textarea"
+                placeholder="Tell us more about your event vision..."
+                rows="4"
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- END BOOKING MODAL OVERLAY -->
+
+    <script src="script.js"></script>
+    <script>
+      function handleContactSubmit(event) {
+        event.preventDefault();
+        alert(
+          "Thank you for your message! We will get back to you within 24 hours."
+        );
+        event.target.reset();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+﻿<%- include('../partials/header') %>
+
+<style>
+    .admin-container { display: flex; min-height: 100vh; }
+    .admin-content { margin-left: 260px; flex: 1; padding: 40px; background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%); transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .admin-sidebar.collapsed ~ .admin-content { margin-left: 70px; }
+    .admin-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 20px; }
+    .admin-table th { background: #546E6A; color: white; padding: 15px; text-align: left; font-weight: 600; }
+    .admin-table td { padding: 15px; border-top: 1px solid #f0f0f0; }
+    .admin-table tr:hover { background: #f8f8f8; }
+    .btn-edit, .btn-delete, .btn-add { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin-right: 5px; font-weight: 600; }
+    .btn-edit { background: #9AB1AE; color: white; }
+    .btn-delete { background: #d32f2f; color: white; }
+    .btn-add { background: #546E6A; color: white; margin-bottom: 20px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: white; width: 90%; max-width: 600px; max-height: 90vh; border-radius: 8px; overflow-y: auto; padding: 30px; box-shadow: 0 10px 50px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { margin: 0; font-family: 'Playfair Display', serif; }
+    .modal-close { background: none; border: none; font-size: 28px; cursor: pointer; color: #666; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .form-input, .form-textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Poppins', sans-serif; }
+    .form-textarea { min-height: 100px; resize: vertical; }
+    .checkbox-group { display: flex; align-items: center; gap: 10px; }
+</style>
+
+<div class="admin-container">
+    <%- include('partials/adminSidebarNew') %>
+    <div class="admin-content">
+        <div class="admin-header">
+            <h1>Manage Packages</h1>
+            <button class="btn-add" onclick="openPackageModal()">+ Add New Package</button>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr><th>Display Name</th><th>Price</th><th>Features</th><th>Featured</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                <% if (typeof packages !== 'undefined' && packages.length > 0) { %>
+                    <% packages.forEach(pkg => { %>
+                        <tr>
+                            <td><strong><%= pkg.displayName %></strong></td>
+                            <td><%= pkg.price %></td>
+                            <td><%= pkg.features ? pkg.features.length : 0 %> features</td>
+                            <td><%= pkg.isFeatured ? 'Yes' : 'No' %></td>
+                            <td>
+                                <button class="btn-edit" onclick="editPackage('<%= pkg._id %>')">Edit</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align: center;">No packages found</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Package Modal -->
+<div class="modal-overlay" id="packageModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="packageModalTitle">Add New Package</h2>
+            <button class="modal-close" onclick="closePackageModal()">&times;</button>
+        </div>
+        <form id="packageForm" onsubmit="handlePackageSubmit(event)">
+            <input type="hidden" id="packageId" name="packageId">
+            <div class="form-group">
+                <label class="form-label">Package Type *</label>
+                <select id="packageName" name="name" class="form-input" required>
+                    <option value="">Select package type</option>
+                    <option value="basic">Basic</option>
+                    <option value="premium">Premium</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Display Name *</label>
+                <input type="text" id="packageDisplayName" name="displayName" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Price *</label>
+                <input type="text" id="packagePrice" name="price" class="form-input" placeholder="Starting at PKR 150,000" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Features (one per line) *</label>
+                <textarea id="packageFeatures" name="features" class="form-textarea" placeholder="Feature 1&#10;Feature 2&#10;Feature 3" required></textarea>
+                <small style="color: #666;">Enter each feature on a new line</small>
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="packageIsFeatured" name="isFeatured">
+                <label class="form-label" for="packageIsFeatured" style="margin: 0;">Mark as Featured (Most Popular)</label>
+            </div>
+            <button type="submit" class="btn-add" style="width: 100%;">Save Package</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script>
+let editingPackageId = null;
+
+function openPackageModal(packageId = null) {
+    editingPackageId = packageId;
+    document.getElementById('packageModal').classList.add('active');
+    document.getElementById('packageForm').reset();
+    document.getElementById('packageId').value = '';
+    
+    if (packageId) {
+        document.getElementById('packageModalTitle').textContent = 'Edit Package';
+        // Fetch package data
+        fetch(`/admin/packages/${packageId}`)
+            .then(r => r.json())
+            .then(result => {
+                if (result.success) {
+                    const pkg = result.package;
+                    document.getElementById('packageId').value = pkg._id;
+                    document.getElementById('packageName').value = pkg.name;
+                    document.getElementById('packageDisplayName').value = pkg.displayName || '';
+                    document.getElementById('packagePrice').value = pkg.price || '';
+                    document.getElementById('packageFeatures').value = pkg.features ? pkg.features.join('\n') : '';
+                    document.getElementById('packageIsFeatured').checked = pkg.isFeatured || false;
+                }
+            });
+    } else {
+        document.getElementById('packageModalTitle').textContent = 'Add New Package';
+    }
+    document.body.style.overflow = 'hidden';
+}
+
+function closePackageModal() {
+    document.getElementById('packageModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+    editingPackageId = null;
+}
+
+function editPackage(id) {
+    openPackageModal(id);
+}
+
+async function handlePackageSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const features = formData.get('features').split('\n').map(f => f.trim()).filter(f => f);
+    
+    const data = {
+        name: formData.get('name'),
+        displayName: formData.get('displayName'),
+        price: formData.get('price'),
+        features: features,
+        isFeatured: formData.get('isFeatured') === 'on'
+    };
+    
+    try {
+        const response = await fetch('/admin/packages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            closePackageModal();
+            location.reload();
+        } else {
+            alert(result.message || 'Error saving package');
+        }
+    } catch (error) {
+        alert('Error saving package');
+    }
+}
+
+// Close modal on outside click
+document.getElementById('packageModal').addEventListener('click', function(e) {
+    if (e.target === this) closePackageModal();
+});
+</script>
+</body>
+</html>
+
+

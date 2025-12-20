@@ -1,0 +1,139 @@
+﻿<%- include('../partials/header') %>
+
+<style>
+    .admin-container { display: flex; min-height: 100vh; }
+    .admin-content { margin-left: 260px; flex: 1; padding: 40px; background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%); transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .admin-sidebar.collapsed ~ .admin-content { margin-left: 70px; }
+    .admin-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 20px; }
+    .admin-table th { background: #546E6A; color: white; padding: 15px; text-align: left; font-weight: 600; }
+    .admin-table td { padding: 15px; border-top: 1px solid #f0f0f0; }
+    .admin-table tr:hover { background: #f8f8f8; }
+    .btn-edit, .btn-delete { padding: 5px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 5px; }
+    .btn-edit { background: #9AB1AE; color: white; }
+    .btn-delete { background: #d32f2f; color: white; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: white; width: 90%; max-width: 700px; max-height: 90vh; border-radius: 8px; overflow-y: auto; padding: 30px; box-shadow: 0 10px 50px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
+    .modal-header h2 { margin: 0; font-family: 'Playfair Display', serif; color: #546E6A; }
+    .modal-close { background: none; border: none; font-size: 28px; cursor: pointer; color: #666; line-height: 1; }
+    .modal-close:hover { color: #333; }
+    .modal-detail-group { margin-bottom: 20px; }
+    .modal-detail-label { font-weight: 600; color: #546E6A; margin-bottom: 5px; display: block; }
+    .modal-detail-value { color: #333; padding: 8px 0; }
+</style>
+
+<div class="admin-container">
+    <%- include('partials/adminSidebarNew') %>
+    <div class="admin-content">
+        <h1>Manage Messages</h1>
+        <table class="admin-table">
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                <% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+                    <% messages.forEach(message => { %>
+                        <tr>
+                            <td><%= message.firstName %> <%= message.lastName %></td>
+                            <td><%= message.email %></td>
+                            <td><%= message.subject %></td>
+                            <td><%= new Date(message.createdAt).toLocaleDateString() %></td>
+                            <td><%= message.status %></td>
+                            <td>
+                                <button class="btn-edit" onclick="viewMessage('<%= message._id %>')">View</button>
+                                <select onchange="fetch('/admin/messages/<%= message._id %>/status', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:this.value})}).then(()=>location.reload())">
+                                    <option value="New" <%= message.status==='New'?'selected':'' %>>New</option>
+                                    <option value="Read" <%= message.status==='Read'?'selected':'' %>>Read</option>
+                                </select>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="6" style="text-align: center;">No messages found</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Message Detail Modal -->
+<div class="modal-overlay" id="messageModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Message Details</h2>
+            <button class="modal-close" onclick="closeMessageModal()">&times;</button>
+        </div>
+        <div id="messageModalContent">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script>
+async function viewMessage(id) {
+    try {
+        const response = await fetch(`/admin/messages/${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            const message = result.message;
+            const content = `
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Name:</span>
+                    <span class="modal-detail-value">${message.firstName} ${message.lastName || ''}</span>
+                </div>
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Email:</span>
+                    <span class="modal-detail-value">${message.email}</span>
+                </div>
+                ${message.phone ? `
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Phone:</span>
+                    <span class="modal-detail-value">${message.phone}</span>
+                </div>
+                ` : ''}
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Subject:</span>
+                    <span class="modal-detail-value" style="font-weight: 600; font-size: 18px; color: #546E6A;">${message.subject}</span>
+                </div>
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Message:</span>
+                    <div class="modal-detail-value" style="background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 5px; line-height: 1.6; white-space: pre-wrap;">${message.message}</div>
+                </div>
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Status:</span>
+                    <span class="modal-detail-value" style="display: inline-block; padding: 5px 15px; background: ${message.status === 'Read' ? '#2196f3' : '#ff9800'}; color: white; border-radius: 20px; font-size: 12px; font-weight: 600;">${message.status}</span>
+                </div>
+                <div class="modal-detail-group">
+                    <span class="modal-detail-label">Received:</span>
+                    <span class="modal-detail-value">${new Date(message.createdAt).toLocaleString()}</span>
+                </div>
+            `;
+            
+            document.getElementById('messageModalContent').innerHTML = content;
+            document.getElementById('messageModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        } else {
+            alert('Error loading message details');
+        }
+    } catch (error) {
+        console.error('Error loading message:', error);
+        alert('Error loading message details');
+    }
+}
+
+function closeMessageModal() {
+    document.getElementById('messageModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal on outside click
+document.getElementById('messageModal').addEventListener('click', function(e) {
+    if (e.target === this) closeMessageModal();
+});
+</script>
+</body>
+</html>
+

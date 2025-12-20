@@ -1,0 +1,265 @@
+﻿<%- include('../partials/header') %>
+
+<style>
+    .admin-container { display: flex; min-height: 100vh; }
+    .admin-content { margin-left: 260px; flex: 1; padding: 40px; background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%); transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .admin-sidebar.collapsed ~ .admin-content { margin-left: 70px; }
+    .admin-form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; }
+    
+    .form-input, .form-textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Poppins', sans-serif; }
+    .form-textarea { min-height: 100px; resize: vertical; }
+    .btn-save { padding: 12px 30px; background: #546E6A; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
+    .btn-save:hover { background: #455A56; }
+    .team-member-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f8f8; border-radius: 8px; margin-bottom: 10px; }
+    .btn-remove { padding: 5px 15px; background: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .team-member-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 15px; }
+</style>
+
+<div class="admin-container">
+    <%- include('partials/adminSidebarNew') %>
+    <div class="admin-content">
+        <h1>Manage About Us</h1>
+        
+        <form id="aboutForm" onsubmit="handleAboutSubmit(event)">
+            <div class="admin-form-card">
+                <h2 style="margin-bottom: 20px;">Company Information</h2>
+                <div class="form-group">
+                    <label class="form-label">Our Story</label>
+                    <textarea name="ourStory" class="form-textarea" style="min-height: 150px;"><%= typeof about !== 'undefined' && about.ourStory ? about.ourStory : '' %></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Our Story Image URL</label>
+                    <input type="text" name="ourStoryImage" class="form-input" placeholder="https://example.com/image.jpg" value="<%= typeof about !== 'undefined' && about.ourStoryImage ? about.ourStoryImage : '' %>">
+                    <small style="color: #666;">Enter image URL for the "Our Story" section</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mission</label>
+                    <textarea name="mission" class="form-textarea"><%= typeof about !== 'undefined' && about.mission ? about.mission : '' %></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mission Image URL</label>
+                    <input type="text" name="missionImage" class="form-input" placeholder="https://example.com/image.jpg" value="<%= typeof about !== 'undefined' && about.missionImage ? about.missionImage : '' %>">
+                    <small style="color: #666;">Enter image URL for the "Our Mission" section</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Vision</label>
+                    <textarea name="vision" class="form-textarea"><%= typeof about !== 'undefined' && about.vision ? about.vision : '' %></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Vision Image URL</label>
+                    <input type="text" name="visionImage" class="form-input" placeholder="https://example.com/image.jpg" value="<%= typeof about !== 'undefined' && about.visionImage ? about.visionImage : '' %>">
+                    <small style="color: #666;">Enter image URL for the "Our Vision" section</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Values</label>
+                    <textarea name="values" class="form-textarea"><%= typeof about !== 'undefined' && about.values ? about.values : '' %></textarea>
+                </div>
+            </div>
+            
+            <div class="admin-form-card">
+                <h2 style="margin-bottom: 20px;">Journey Stats</h2>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Events Handled</label>
+                        <input type="number" name="eventsHandled" class="form-input" value="<%= typeof about !== 'undefined' && about.journeyStats ? about.journeyStats.eventsHandled : 0 %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vendors</label>
+                        <input type="number" name="vendors" class="form-input" value="<%= typeof about !== 'undefined' && about.journeyStats ? about.journeyStats.vendors : 0 %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Clients</label>
+                        <input type="number" name="clients" class="form-input" value="<%= typeof about !== 'undefined' && about.journeyStats ? about.journeyStats.clients : 0 %>">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-form-card">
+                <h2 style="margin-bottom: 20px;">Social Media Links</h2>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Instagram URL</label>
+                        <input type="url" name="instagram" class="form-input" placeholder="https://instagram.com/yourprofile" value="<%= typeof about !== 'undefined' && about.socialMedia && about.socialMedia.instagram ? about.socialMedia.instagram : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Facebook URL</label>
+                        <input type="url" name="facebook" class="form-input" placeholder="https://facebook.com/yourprofile" value="<%= typeof about !== 'undefined' && about.socialMedia && about.socialMedia.facebook ? about.socialMedia.facebook : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">LinkedIn URL</label>
+                        <input type="url" name="linkedin" class="form-input" placeholder="https://linkedin.com/company/yourcompany" value="<%= typeof about !== 'undefined' && about.socialMedia && about.socialMedia.linkedin ? about.socialMedia.linkedin : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Twitter/X URL</label>
+                        <input type="url" name="twitter" class="form-input" placeholder="https://twitter.com/yourprofile" value="<%= typeof about !== 'undefined' && about.socialMedia && about.socialMedia.twitter ? about.socialMedia.twitter : '' %>">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-form-card">
+                <h2 style="margin-bottom: 20px;">Team Members</h2>
+                <div id="teamMembersList">
+                    <% if (typeof about !== 'undefined' && about.teamMembers && about.teamMembers.length > 0) { %>
+                        <% about.teamMembers.forEach((member, index) => { %>
+                            <div class="team-member-item" data-index="<%= index %>">
+                                <div>
+                                    <strong><%= member.name %></strong> - <span><%= member.role %></span>
+                                </div>
+                                <button type="button" class="btn-remove" onclick="removeTeamMember(<%= index %>)">Remove</button>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p style="color: #666;">No team members added yet.</p>
+                    <% } %>
+                </div>
+                <div class="team-member-form" style="grid-template-columns: 1fr 1fr 1fr auto auto; gap: 10px;">
+                    <input type="text" id="teamMemberName" class="form-input" placeholder="Team Member Name">
+                    <input type="text" id="teamMemberRole" class="form-input" placeholder="Role/Position">
+                    <input type="file" id="teamMemberPhotoFile" class="form-input" accept="image/*" onchange="handleTeamPhotoPreview(this)">
+                    <input type="hidden" id="teamMemberPhoto" placeholder="Photo URL">
+                    <button type="button" class="btn-save" onclick="addTeamMember()">Add Member</button>
+                </div>
+                <div id="teamPhotoPreview" style="margin-top: 10px;"></div>
+            </div>
+            
+            <button type="submit" class="btn-save" style="width: 100%; padding: 15px; margin-top: 20px;">Update About Us</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script>
+let teamMembers = <%= typeof about !== 'undefined' && about.teamMembers ? JSON.stringify(about.teamMembers) : '[]' %>;
+let teamPhotoFile = null;
+
+function handleTeamPhotoPreview(input) {
+    const preview = document.getElementById('teamPhotoPreview');
+    preview.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        teamPhotoFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '4px';
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function addTeamMember() {
+    const name = document.getElementById('teamMemberName').value.trim();
+    const role = document.getElementById('teamMemberRole').value.trim();
+    const photoUrlInput = document.getElementById('teamMemberPhoto').value.trim();
+    
+    if (!name || !role) {
+        alert('Please enter both name and role');
+        return;
+    }
+    
+    let photoUrl = photoUrlInput;
+    
+    // Upload photo if file is selected
+    if (teamPhotoFile) {
+        const formData = new FormData();
+        formData.append('photo', teamPhotoFile);
+        
+        try {
+            const response = await fetch('/admin/upload-team-photo', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.success) {
+                photoUrl = result.url;
+            }
+        } catch (error) {
+            console.error('Error uploading photo:', error);
+        }
+    }
+    
+    teamMembers.push({ name, role, photoUrl: photoUrl || '' });
+    updateTeamMembersList();
+    document.getElementById('teamMemberName').value = '';
+    document.getElementById('teamMemberRole').value = '';
+    document.getElementById('teamMemberPhoto').value = '';
+    document.getElementById('teamMemberPhotoFile').value = '';
+    document.getElementById('teamPhotoPreview').innerHTML = '';
+    teamPhotoFile = null;
+}
+
+function removeTeamMember(index) {
+    teamMembers.splice(index, 1);
+    updateTeamMembersList();
+}
+
+function updateTeamMembersList() {
+    const list = document.getElementById('teamMembersList');
+    if (teamMembers.length === 0) {
+        list.innerHTML = '<p style="color: #666;">No team members added yet.</p>';
+        return;
+    }
+    
+    list.innerHTML = teamMembers.map((member, index) => `
+        <div class="team-member-item" data-index="${index}">
+            <div><strong>${member.name}</strong> - <span>${member.role}</span></div>
+            <button type="button" class="btn-remove" onclick="removeTeamMember(${index})">Remove</button>
+        </div>
+    `).join('');
+}
+
+async function handleAboutSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const data = {
+        ourStory: formData.get('ourStory') || '',
+        ourStoryImage: formData.get('ourStoryImage') || '',
+        mission: formData.get('mission') || '',
+        missionImage: formData.get('missionImage') || '',
+        vision: formData.get('vision') || '',
+        visionImage: formData.get('visionImage') || '',
+        values: formData.get('values') || '',
+        journeyStats: {
+            eventsHandled: parseInt(formData.get('eventsHandled')) || 0,
+            vendors: parseInt(formData.get('vendors')) || 0,
+            clients: parseInt(formData.get('clients')) || 0
+        },
+        teamMembers: teamMembers,
+        socialMedia: {
+            instagram: formData.get('instagram') || '',
+            facebook: formData.get('facebook') || '',
+            linkedin: formData.get('linkedin') || '',
+            twitter: formData.get('twitter') || ''
+        }
+    };
+    
+    try {
+        const response = await fetch('/admin/about', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert('About page updated successfully!');
+            location.reload();
+        } else {
+            alert('Error updating about page');
+        }
+    } catch (error) {
+        alert('Error updating about page');
+    }
+}
+</script>
+</body>
+</html>
+

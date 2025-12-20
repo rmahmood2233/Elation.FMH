@@ -1,0 +1,46 @@
+<nav class="navbar">
+    <div class="logo-section">
+        <a href="/" style="display: flex; align-items: center; gap: 15px; text-decoration: none; color: inherit;">
+            <div class="logo-circle">EBF</div>
+            <div class="logo-text">Elation by FMH</div>
+        </a>
+    </div>
+    <div class="nav-menu">
+        <a href="/" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">Home</a>
+        <a href="/services" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'services' ? 'active' : '' %>">Services</a>
+        <a href="/portfolio" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'portfolio' ? 'active' : '' %>">Portfolio</a>
+        <a href="/about" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'active' : '' %>">About</a>
+        <a href="/contact" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'active' : '' %>">Contact</a>
+    </div>
+    <div class="nav-actions">
+        <button class="btn-book" onclick="openBookingModal()">Book Now</button>
+        <% if (typeof user !== 'undefined' && user) { %>
+            <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                <a href="/admin/dashboard" class="btn-auth" style="background: #546E6A; color: white; border: none;">Admin Panel</a>
+            <% } %>
+            <div class="user-menu-container">
+                <div class="user-avatar" onclick="toggleUserMenu()" <% if (user.profilePic) { %>style="background-image: url('<%= user.profilePic %>');"<% } %>>
+                    <% if (!user.profilePic) { %>
+                        <%= (user.firstName ? user.firstName.charAt(0).toUpperCase() : '') + (user.lastName ? user.lastName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()) %>
+                    <% } %>
+                </div>
+                <div class="user-menu-dropdown" id="userMenuDropdown">
+                    <a href="#" onclick="openProfileModal(); return false;" class="user-menu-item">
+                        <span>👤</span> Personal Info
+                    </a>
+                    <a href="#" onclick="openProfilePicModal(); return false;" class="user-menu-item">
+                        <span>📷</span> Profile Picture
+                    </a>
+                    <div class="user-menu-divider"></div>
+                    <a href="#" onclick="handleLogout(); return false;" class="user-menu-item">
+                        <span>🚪</span> Logout
+                    </a>
+                </div>
+            </div>
+        <% } else { %>
+            <a href="/auth/login" class="btn-auth">Log In</a>
+            <a href="/auth/signup" class="btn-auth btn-signup">Sign Up</a>
+        <% } %>
+    </div>
+</nav>
+

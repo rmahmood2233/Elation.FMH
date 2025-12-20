@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Elation by FMH</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Montserrat:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      /* Inline style for password toggle icon cursor */
+      .password-toggle {
+        cursor: pointer;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-box">
+        <h1 class="login-title">Welcome.</h1>
+        <p class="login-subtitle" id="formSubtitle">Create an account</p>
+
+        <!-- Signup Form -->
+        <form id="signupForm">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="signupEmail"
+              placeholder="example.email@gmail.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input
+                type="password"
+                class="form-input"
+                id="signupPassword"
+                placeholder="Enter at least 8+ characters"
+                minlength="8"
+                required
+              />
+              <span class="password-toggle" id="toggleSignupPassword">👁</span>
+            </div>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="terms" required />
+            <label for="terms">I agree with Terms & Conditions</label>
+          </div>
+          <button type="submit" class="btn-primary">Sign Up</button>
+        </form>
+
+        <!-- Login Form (hidden by default) -->
+        <form id="loginForm" style="display: none">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="loginEmail"
+              placeholder="example.email@gmail.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input
+                type="password"
+                class="form-input"
+                id="loginPassword"
+                placeholder="Enter your password"
+                minlength="8"
+                required
+              />
+              <span class="password-toggle" id="toggleLoginPassword">👁</span>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">Log In</button>
+        </form>
+
+        <div class="divider" id="dividerSocial">Or sign up with</div>
+        <div class="social-login" id="socialButtons">
+          <button class="social-btn" title="Continue with Google">G</button>
+          <button class="social-btn" title="Continue with Facebook">f</button>
+        </div>
+        <div class="login-footer" id="footerText">
+          Already have an account? <a href="#" id="toggleForm">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

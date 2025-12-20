@@ -1,0 +1,267 @@
+﻿<%- include('../partials/header') %>
+
+<style>
+    .admin-container { display: flex; min-height: 100vh; }
+    .admin-content { margin-left: 260px; flex: 1; padding: 40px; background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%); transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .admin-sidebar.collapsed ~ .admin-content { margin-left: 70px; }
+    .admin-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 20px; }
+    .admin-table th { background: #546E6A; color: white; padding: 15px; text-align: left; font-weight: 600; }
+    .admin-table td { padding: 15px; border-top: 1px solid #f0f0f0; }
+    .admin-table tr:hover { background: #f8f8f8; }
+    .btn-edit, .btn-delete, .btn-add { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin-right: 5px; font-weight: 600; }
+    .btn-edit { background: #9AB1AE; color: white; }
+    .btn-delete { background: #d32f2f; color: white; }
+    .btn-add { background: #546E6A; color: white; margin-bottom: 20px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: white; width: 90%; max-width: 600px; max-height: 90vh; border-radius: 8px; overflow-y: auto; padding: 30px; box-shadow: 0 10px 50px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { margin: 0; font-family: 'Playfair Display', serif; }
+    .modal-close { background: none; border: none; font-size: 28px; cursor: pointer; color: #666; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .form-input, .form-textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Poppins', sans-serif; }
+    .form-textarea { min-height: 100px; resize: vertical; }
+</style>
+
+<div class="admin-container">
+    <%- include('partials/adminSidebarNew') %>
+    <div class="admin-content" id="adminContent">
+        <div class="admin-header">
+            <h1>Manage Portfolio</h1>
+            <button class="btn-add" onclick="openPortfolioModal()">+ Add New Portfolio Item</button>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr><th>Event Name</th><th>Location</th><th>Foot Count</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                <% if (typeof portfolio !== 'undefined' && portfolio.length > 0) { %>
+                    <% portfolio.forEach(item => { %>
+                        <tr>
+                            <td><%= item.eventName %></td>
+                            <td><%= item.location %></td>
+                            <td><%= item.footCount || 0 %></td>
+                            <td><%= new Date(item.dateUploaded).toLocaleDateString() %></td>
+                            <td>
+                                <button class="btn-edit" onclick="editPortfolioById('<%= item._id %>')">Edit</button>
+                                <button class="btn-delete" onclick="deletePortfolio('<%= item._id %>')">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align: center;">No portfolio items found</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Portfolio Modal -->
+<div class="modal-overlay" id="portfolioModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="portfolioModalTitle">Add New Portfolio Item</h2>
+            <button class="modal-close" onclick="closePortfolioModal()">&times;</button>
+        </div>
+        <form id="portfolioForm" enctype="multipart/form-data" onsubmit="handlePortfolioSubmit(event)">
+            <input type="hidden" id="portfolioId" name="portfolioId">
+            <div class="form-group">
+                <label class="form-label">Event Name *</label>
+                <input type="text" id="portfolioEventName" name="eventName" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location *</label>
+                <input type="text" id="portfolioLocation" name="location" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Timing</label>
+                <input type="text" id="portfolioTiming" name="timing" class="form-input" placeholder="e.g., Evening, Full Day">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Foot Count (Number of Guests)</label>
+                <input type="number" id="portfolioFootCount" name="footCount" class="form-input" min="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea id="portfolioDescription" name="description" class="form-textarea"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Upload Images (max 10)</label>
+                <input type="file" id="portfolioImageUpload" name="images" class="form-input" multiple accept="image/*" onchange="handleImagePreview(this, 'portfolioImagesPreview')">
+                <div id="portfolioImagesPreview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
+                <small style="color: #666;">You can select multiple images. First image will be used as the main image.</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Or Enter Image URLs (one per line, max 10)</label>
+                <textarea id="portfolioImages" name="imageUrls" class="form-textarea" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
+                <small style="color: #666;">Alternative: Enter image URLs, one per line. URLs will be combined with uploaded images.</small>
+            </div>
+            <button type="submit" class="btn-add" style="width: 100%;">Save Portfolio Item</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script>
+let editingPortfolioId = null;
+
+function openPortfolioModal(portfolioId = null) {
+    editingPortfolioId = portfolioId;
+    document.getElementById('portfolioModal').classList.add('active');
+    document.getElementById('portfolioForm').reset();
+    document.getElementById('portfolioId').value = '';
+    document.getElementById('portfolioImagesPreview').innerHTML = '';
+    
+    if (portfolioId) {
+        document.getElementById('portfolioModalTitle').textContent = 'Edit Portfolio Item';
+    } else {
+        document.getElementById('portfolioModalTitle').textContent = 'Add New Portfolio Item';
+    }
+    document.body.style.overflow = 'hidden';
+}
+
+function closePortfolioModal() {
+    document.getElementById('portfolioModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+    editingPortfolioId = null;
+}
+
+async function editPortfolioById(id) {
+    try {
+        const response = await fetch(`/admin/portfolio/${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            const portfolio = result.portfolio;
+            document.getElementById('portfolioId').value = portfolio._id;
+            document.getElementById('portfolioEventName').value = portfolio.eventName || '';
+            document.getElementById('portfolioLocation').value = portfolio.location || '';
+            document.getElementById('portfolioTiming').value = portfolio.timing || '';
+            document.getElementById('portfolioFootCount').value = portfolio.footCount || 0;
+            document.getElementById('portfolioDescription').value = portfolio.description || '';
+            document.getElementById('portfolioImages').value = portfolio.images && portfolio.images.length > 0 ? portfolio.images.join('\n') : '';
+            
+            // Display existing images as preview
+            if (portfolio.images && portfolio.images.length > 0) {
+                handleImagePreviewFromUrls(portfolio.images, 'portfolioImagesPreview');
+            }
+            
+            openPortfolioModal(portfolio._id);
+        } else {
+            alert('Error loading portfolio item');
+        }
+    } catch (error) {
+        console.error('Error loading portfolio:', error);
+        alert('Error loading portfolio item');
+    }
+}
+
+async function handlePortfolioSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const portfolioId = formData.get('portfolioId');
+    
+    // Check if this is an edit operation
+    if (portfolioId && portfolioId.trim() !== '') {
+        // For updates, use PUT method with method-override
+        formData.append('_method', 'PUT');
+        var url = `/admin/portfolio/${portfolioId}`;
+        var method = 'POST'; // Express method-override expects POST with _method param
+    } else {
+        var url = '/admin/portfolio';
+        var method = 'POST';
+    }
+    
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: formData
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            closePortfolioModal();
+            location.reload();
+        } else {
+            alert(result.message || 'Error saving portfolio item');
+        }
+    } catch (error) {
+        console.error('Error saving portfolio:', error);
+        alert('Error saving portfolio item');
+    }
+}
+
+async function deletePortfolio(id) {
+    if (!confirm('Are you sure you want to delete this portfolio item?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/portfolio/${id}`, {
+            method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert('Portfolio item deleted successfully');
+            location.reload();
+        } else {
+            alert(result.message || 'Error deleting portfolio item');
+        }
+    } catch (error) {
+        console.error('Error deleting portfolio:', error);
+        alert('Error deleting portfolio item');
+    }
+}
+
+function handleImagePreview(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (input.files && input.files.length > 0) {
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '4px';
+                img.style.margin = '5px';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+function handleImagePreviewFromUrls(urls, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (urls && urls.length > 0) {
+        urls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url.startsWith('/') ? url : url;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '4px';
+            img.style.margin = '5px';
+            preview.appendChild(img);
+        });
+    }
+}
+
+// Close modal on outside click
+document.getElementById('portfolioModal').addEventListener('click', function(e) {
+    if (e.target === this) closePortfolioModal();
+});
+</script>
+</body>
+</html>

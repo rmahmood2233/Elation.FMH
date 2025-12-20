@@ -1,0 +1,232 @@
+﻿<%- include('../partials/header') %>
+
+<style>
+    .admin-container { display: flex; min-height: 100vh; }
+    .admin-content { margin-left: 260px; flex: 1; padding: 40px; background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%); transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .admin-sidebar.collapsed ~ .admin-content { margin-left: 70px; }
+    .admin-link { display: block; padding: 15px; color: white; text-decoration: none; margin-bottom: 10px; border-radius: 4px; transition: background 0.3s; }
+    .admin-link:hover, .admin-link.active { background: rgba(255,255,255,0.2); }
+    .admin-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 20px; }
+    .admin-table th { background: #546E6A; color: white; padding: 15px; text-align: left; font-weight: 600; }
+    .admin-table td { padding: 15px; border-top: 1px solid #f0f0f0; }
+    .admin-table tr:hover { background: #f8f8f8; }
+    .btn-edit, .btn-delete, .btn-add { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin-right: 5px; font-weight: 600; }
+    .btn-edit { background: #9AB1AE; color: white; }
+    .btn-delete { background: #d32f2f; color: white; }
+    .btn-add { background: #546E6A; color: white; margin-bottom: 20px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: white; width: 90%; max-width: 600px; max-height: 90vh; border-radius: 8px; overflow-y: auto; padding: 30px; box-shadow: 0 10px 50px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { margin: 0; font-family: 'Playfair Display', serif; }
+    .modal-close { background: none; border: none; font-size: 28px; cursor: pointer; color: #666; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .form-input, .form-textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Poppins', sans-serif; }
+    .form-textarea { min-height: 100px; resize: vertical; }
+</style>
+
+<div class="admin-container">
+    <%- include('partials/adminSidebarNew') %>
+    <div class="admin-content">
+        <div class="admin-header">
+            <h1>Manage Services</h1>
+            <button class="btn-add" onclick="openServiceModal()">+ Add New Service</button>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr><th>Name</th><th>Short Description</th><th>Price</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                <% if (typeof services !== 'undefined' && services.length > 0) { %>
+                    <% services.forEach(service => { %>
+                        <tr>
+                            <td><%= service.name %></td>
+                            <td><%= service.shortDesc %></td>
+                            <td>PKR <%= service.price.toLocaleString() %></td>
+                            <td>
+                                <button class="btn-edit" onclick="editServiceById('<%= service._id %>')">Edit</button>
+                                <button class="btn-delete" onclick="deleteService('<%= service._id %>')">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="4" style="text-align: center;">No services found</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Service Modal -->
+<div class="modal-overlay" id="serviceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Service</h2>
+            <button class="modal-close" onclick="closeServiceModal()">&times;</button>
+        </div>
+        <form id="serviceForm" enctype="multipart/form-data" onsubmit="handleServiceSubmit(event)">
+            <input type="hidden" id="serviceId" name="serviceId">
+            <div class="form-group">
+                <label class="form-label">Service Name *</label>
+                <input type="text" id="serviceName" name="name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Short Description *</label>
+                <textarea id="serviceShortDesc" name="shortDesc" class="form-textarea" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full Description (100+ characters) *</label>
+                <textarea id="serviceFullDesc" name="fullDesc" class="form-textarea" style="min-height: 150px;" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Price (PKR) *</label>
+                <input type="number" id="servicePrice" name="price" class="form-input" min="0" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Upload Images (max 5, optional)</label>
+                <input type="file" id="serviceImageUpload" name="images" class="form-input" multiple accept="image/*" onchange="handleImagePreview(this, 'serviceImagesPreview')">
+                <div id="serviceImagesPreview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
+                <small style="color: #666;">You can select multiple images. First image will be used as the main image.</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Or Enter Image URLs (one per line, max 5, optional)</label>
+                <textarea id="serviceImages" name="imageUrls" class="form-textarea" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
+                <small style="color: #666;">Alternative: Enter image URLs, one per line. URLs will be combined with uploaded images.</small>
+            </div>
+            <button type="submit" class="btn-add" style="width: 100%;">Save Service</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script>
+let editingServiceId = null;
+
+function openServiceModal(serviceId = null) {
+    editingServiceId = serviceId;
+    document.getElementById('serviceModal').classList.add('active');
+    document.getElementById('serviceForm').reset();
+    document.getElementById('serviceId').value = '';
+    
+    if (serviceId) {
+        document.getElementById('modalTitle').textContent = 'Edit Service';
+    } else {
+        document.getElementById('modalTitle').textContent = 'Add New Service';
+    }
+    document.body.style.overflow = 'hidden';
+}
+
+function closeServiceModal() {
+    document.getElementById('serviceModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+    editingServiceId = null;
+}
+
+async function editServiceById(id) {
+    try {
+        const response = await fetch(`/admin/services/${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            const service = result.service;
+            document.getElementById('serviceId').value = service._id;
+            document.getElementById('serviceName').value = service.name || '';
+            document.getElementById('serviceShortDesc').value = service.shortDesc || '';
+            document.getElementById('serviceFullDesc').value = service.fullDesc || '';
+            document.getElementById('servicePrice').value = service.price || 0;
+            document.getElementById('serviceImages').value = service.images && service.images.length > 0 ? service.images.join('\n') : '';
+            openServiceModal(service._id);
+        } else {
+            alert('Error loading service');
+        }
+    } catch (error) {
+        alert('Error loading service');
+    }
+}
+
+async function handleServiceSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const serviceId = formData.get('serviceId');
+    
+    // Check if this is an edit operation
+    if (serviceId && serviceId.trim() !== '') {
+        // For updates, use PUT method with method-override
+        formData.append('_method', 'PUT');
+        var url = `/admin/services/${serviceId}`;
+        var method = 'POST'; // Express method-override expects POST with _method param
+    } else {
+        var url = '/admin/services';
+        var method = 'POST';
+    }
+    
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: formData
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            closeServiceModal();
+            location.reload();
+        } else {
+            alert(result.message || 'Error saving service. Please check that Full Description is at least 100 characters.');
+        }
+    } catch (error) {
+        alert('Error saving service');
+    }
+}
+
+function handleImagePreview(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (input.files && input.files.length > 0) {
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '4px';
+                img.style.margin = '5px';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+async function deleteService(id) {
+    if (!confirm('Are you sure you want to delete this service?')) return;
+    
+    try {
+        const response = await fetch(`/admin/services/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error deleting service');
+        }
+    } catch (error) {
+        alert('Error deleting service');
+    }
+}
+
+// Close modal on outside click
+document.getElementById('serviceModal').addEventListener('click', function(e) {
+    if (e.target === this) closeServiceModal();
+});
+</script>
+</body>
+</html>
