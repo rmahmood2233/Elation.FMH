@@ -263,7 +263,4 @@ npm run seed
 
 ISC
 
-## Author
-
-Elation by FMH
 
