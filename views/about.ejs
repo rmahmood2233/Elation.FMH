@@ -1,84 +1,172 @@
+<!-- Include common header (HTML head, CSS links, meta tags) -->
 <%- include('partials/header') %>
+
+<!-- Include navigation bar and highlight current page as 'about' -->
 <%- include('partials/navbar', { currentPage: 'about' }) %>
 
+<!-- Page header section -->
 <section class="page-header">
     <h1 class="page-title">About Elation by FMH</h1>
     <p class="page-subtitle">Turning moments into memories since 2020</p>
 </section>
 
+<!-- OUR STORY SECTION -->
 <section class="section">
     <div class="about-content about-content-zigzag about-content-image-left">
+        
+        <!-- Image card for "Our Story" -->
         <div class="about-image-card">
-            <div class="about-image" <% if (typeof about !== 'undefined' && about.ourStoryImage && about.ourStoryImage.trim() !== '') { %>style="background-image: url('<%= about.ourStoryImage %>');"<% } %>></div>
+            <!-- Set background image dynamically if available -->
+            <div class="about-image"
+                <% if (typeof about !== 'undefined' && about.ourStoryImage && about.ourStoryImage.trim() !== '') { %>
+                    style="background-image: url('<%= about.ourStoryImage %>');"
+                <% } %>>
+            </div>
         </div>
+
+        <!-- Text content for "Our Story" -->
         <div class="about-text">
             <h2 class="about-heading">Our Story</h2>
-            <p><%= typeof about !== 'undefined' && about.ourStory ? about.ourStory : 'Founded in 2020, Elation by FMH emerged from a passion for creating extraordinary celebrations. What started as a dream to make every event memorable has grown into a trusted name in event planning across Islamabad and Rawalpindi.' %></p>
+
+            <!-- Show dynamic story if exists, otherwise show default text -->
+            <p>
+                <%= typeof about !== 'undefined' && about.ourStory 
+                    ? about.ourStory 
+                    : 'Founded in 2020, Elation by FMH emerged from a passion for creating extraordinary celebrations. What started as a dream to make every event memorable has grown into a trusted name in event planning across Islamabad and Rawalpindi.' 
+                %>
+            </p>
         </div>
     </div>
 </section>
 
+<!-- OUR MISSION SECTION -->
 <section class="section section-light">
     <div class="about-content about-content-zigzag about-content-image-right">
+
+        <!-- Mission text -->
         <div class="about-text">
             <h2 class="about-heading">Our Mission</h2>
-            <p><%= typeof about !== 'undefined' && about.mission ? about.mission : 'To create unforgettable experiences that celebrate life\'s most precious moments. We are committed to delivering exceptional service, innovative design, and seamless execution that exceeds our clients\' expectations.' %></p>
+
+            <!-- Display mission dynamically or fallback text -->
+            <p>
+                <%= typeof about !== 'undefined' && about.mission 
+                    ? about.mission 
+                    : 'To create unforgettable experiences that celebrate life\'s most precious moments. We are committed to delivering exceptional service, innovative design, and seamless execution that exceeds our clients\' expectations.' 
+                %>
+            </p>
         </div>
+
+        <!-- Mission image -->
         <div class="about-image-card">
-            <div class="about-image" <% if (typeof about !== 'undefined' && about.missionImage && about.missionImage.trim() !== '') { %>style="background-image: url('<%= about.missionImage %>');"<% } %>></div>
+            <div class="about-image"
+                <% if (typeof about !== 'undefined' && about.missionImage && about.missionImage.trim() !== '') { %>
+                    style="background-image: url('<%= about.missionImage %>');"
+                <% } %>>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- OUR VISION SECTION -->
 <section class="section">
     <div class="about-content about-content-zigzag about-content-image-left">
+
+        <!-- Vision image -->
         <div class="about-image-card">
-            <div class="about-image" <% if (typeof about !== 'undefined' && about.visionImage && about.visionImage.trim() !== '') { %>style="background-image: url('<%= about.visionImage %>');"<% } %>></div>
+            <div class="about-image"
+                <% if (typeof about !== 'undefined' && about.visionImage && about.visionImage.trim() !== '') { %>
+                    style="background-image: url('<%= about.visionImage %>');"
+                <% } %>>
+            </div>
         </div>
+
+        <!-- Vision text -->
         <div class="about-text">
             <h2 class="about-heading">Our Vision</h2>
-            <p><%= typeof about !== 'undefined' && about.vision ? about.vision : 'To be the most trusted and sought-after event planning company in Pakistan, known for our creativity, professionalism, and ability to turn dreams into reality. We aspire to set new standards in the event planning industry.' %></p>
+
+            <!-- Dynamic vision or default content -->
+            <p>
+                <%= typeof about !== 'undefined' && about.vision 
+                    ? about.vision 
+                    : 'To be the most trusted and sought-after event planning company in Pakistan, known for our creativity, professionalism, and ability to turn dreams into reality. We aspire to set new standards in the event planning industry.' 
+                %>
+            </p>
         </div>
     </div>
 </section>
 
+<!-- OUR VALUES SECTION (shown only if values exist) -->
 <% if (typeof about !== 'undefined' && about.values) { %>
 <section class="section section-light">
     <h2 class="section-title">Our Values</h2>
-    <p class="section-subtitle" style="max-width: 800px; margin: 0 auto;"><%= about.values %></p>
+
+    <!-- Values text -->
+    <p class="section-subtitle" style="max-width: 800px; margin: 0 auto;">
+        <%= about.values %>
+    </p>
 </section>
 <% } %>
 
+<!-- TEAM MEMBERS SECTION -->
 <section class="section section-light">
     <h2 class="section-title">Meet Our Team</h2>
     <p class="section-subtitle">The passionate professionals behind Elation by FMH</p>
+
+    <!-- Check if team members exist -->
     <% if (typeof about !== 'undefined' && about.teamMembers && about.teamMembers.length > 0) { %>
         <div class="team-grid">
+
+            <!-- Loop through each team member -->
             <% about.teamMembers.forEach(member => { %>
                 <div class="team-card">
-                    <div class="team-photo" style="background-image: url('<%= member.photoUrl && member.photoUrl.trim() !== "" ? member.photoUrl : "" %>'); background: <%= member.photoUrl && member.photoUrl.trim() !== "" ? "transparent" : "linear-gradient(135deg, rgba(154,177,174,0.9), rgba(227,191,185,0.9))" %>;"></div>
+
+                    <!-- Team member photo or gradient fallback -->
+                    <div class="team-photo"
+                        style="
+                            background-image: url('<%= member.photoUrl && member.photoUrl.trim() !== '' ? member.photoUrl : '' %>');
+                            background: <%= member.photoUrl && member.photoUrl.trim() !== '' 
+                                ? 'transparent' 
+                                : 'linear-gradient(135deg, rgba(154,177,174,0.9), rgba(227,191,185,0.9))' 
+                            %>;
+                        ">
+                    </div>
+
+                    <!-- Team member name and role -->
                     <h3 class="team-name"><%= member.name %></h3>
                     <p class="team-role"><%= member.role %></p>
                 </div>
             <% }); %>
         </div>
     <% } else { %>
-        <p style="text-align: center; color: #666; margin-top: 30px;">Team information coming soon...</p>
+
+        <!-- Fallback message if team data is missing -->
+        <p style="text-align: center; color: #666; margin-top: 30px;">
+            Team information coming soon...
+        </p>
     <% } %>
 </section>
 
+<!-- JOURNEY STATISTICS SECTION -->
 <% if (typeof about !== 'undefined' && about.journeyStats) { %>
 <section class="section section-dark">
     <h2 class="section-title">Our Journey</h2>
+
+    <!-- Stats grid -->
     <div class="stats-grid">
+
+        <!-- Events handled -->
         <div class="stat-card">
             <div class="stat-number"><%= about.journeyStats.eventsHandled || 0 %>+</div>
             <div class="stat-label">Events Handled</div>
         </div>
+
+        <!-- Vendors -->
         <div class="stat-card">
             <div class="stat-number"><%= about.journeyStats.vendors || 0 %>+</div>
             <div class="stat-label">Trusted Vendors</div>
         </div>
+
+        <!-- Clients -->
         <div class="stat-card">
             <div class="stat-number"><%= about.journeyStats.clients || 0 %>+</div>
             <div class="stat-label">Happy Clients</div>
@@ -87,11 +175,12 @@
 </section>
 <% } %>
 
+<!-- Footer and modals -->
 <%- include('partials/footer') %>
 <%- include('partials/bookingModal', { services: [] }) %>
 <%- include('partials/profileModals') %>
 
+<!-- Main JS file -->
 <script src="/js/script.js"></script>
 </body>
 </html>
-
